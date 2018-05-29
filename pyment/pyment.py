@@ -104,7 +104,8 @@ class PyComment(object):
                     spaces = m.group(1)
                 else:
                     spaces = ''
-                if l.endswith(':'):
+
+                if re.search(r''':(|\s*#[^'"]*)$''', l):
                     reading_element = 'end'
             if reading_element == 'end':
                 reading_element = None
