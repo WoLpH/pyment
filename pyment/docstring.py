@@ -1655,9 +1655,16 @@ class DocString(object):
     def _set_params(self):
         """Sets the parameters with types, descriptions and default value if any"""
         # TODO: manage different in/out styles
+
+        params = set()
         if self.docs['in']['params']:
             # list of parameters is like: (name, description, type)
-            self.docs['out']['params'] = list(self.docs['in']['params'])
+            for param in self.docs['in']['params']:
+                name = param[0]
+                if name not in params:
+                    params.add(name)
+                    self.docs['out']['params'].append(param)
+
         for e in self.element['params']:
             if type(e) is tuple:
                 # tuple is: (name, default)
@@ -1672,11 +1679,15 @@ class DocString(object):
                     if type(e) is tuple:
                         # param will contain: (name, desc, type, default)
                         self.docs['out']['params'][i] = (p[0], p[1], p[2], e[1])
-            if not found:
+
+            if param not in params:
+                params.add(param)
+
                 if type(e) is tuple:
                     p = (param, '', None, e[1])
                 else:
                     p = (param, '', None, None)
+
                 self.docs['out']['params'].append(p)
 
     def _set_raises(self):
